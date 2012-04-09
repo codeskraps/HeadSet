@@ -8,10 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.PowerManager;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 public class HeadSetReceiver extends BroadcastReceiver {
@@ -92,16 +89,22 @@ public class HeadSetReceiver extends BroadcastReceiver {
 							
 							wl.acquire();
 							kl.disableKeyguard();
-						}
+							
+							Intent i = new Intent(new Intent(context, WakeUpActivity.class));
+							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							context.startActivity(i);
+							
+							wl.release();
+							
+						} else {
 
-						Intent i = new Intent(Intent.ACTION_MAIN, null);
-						i.addCategory(Intent.CATEGORY_LAUNCHER);
-						i.setComponent(new ComponentName(pac, act));
-						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						context.startActivity(i);
+							Intent i = new Intent(Intent.ACTION_MAIN, null);
+							i.addCategory(Intent.CATEGORY_LAUNCHER);
+							i.setComponent(new ComponentName(pac, act));
+							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							context.startActivity(i);
 						
-						if (prefs.getBoolean(WAKEUP, false)) wl.release();
-						
+						}
 					}
 				} catch (Exception e) {
 					Toast.makeText(context, "HeadSet - Couldn't launch the app", Toast.LENGTH_SHORT).show();
