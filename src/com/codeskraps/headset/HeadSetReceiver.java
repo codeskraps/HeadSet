@@ -8,7 +8,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class HeadSetReceiver extends BroadcastReceiver {
@@ -83,9 +86,10 @@ public class HeadSetReceiver extends BroadcastReceiver {
 						
 						PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 						PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
-								PowerManager.FULL_WAKE_LOCK, lab);
+								PowerManager.SCREEN_BRIGHT_WAKE_LOCK, lab);
 						
 						if (prefs.getBoolean(WAKEUP, false)) {
+							
 							wl.acquire();
 							kl.disableKeyguard();
 						}
