@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="themeColor">#B39000</color>
+    <color name="themeColorBackground">#66B39000</color>
+    <color name="regColorBackground">#00000000</color>
+    <color name="regColor">#eeeeee</color>
+</resources>
