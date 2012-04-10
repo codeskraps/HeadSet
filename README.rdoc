@@ -21,12 +21,12 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
-<b>v1.6  -First official release. Added Licenses</b>
-<b>v1.5  -Wake from full sleep</b>
-<b>v1.4  -Setup Volume in relation to maximum volume of the device</b>
-<b>v1.3  -Lock screen disable fixed</b>
-<b>v1.2  -Added a bunch of features</b>
-<b>v1.1  -First plain release... Gone and forgotten</b>
+<tt>v1.6  -First official release. Added Licenses</tt>
+<tt>v1.5  -Wake from full sleep</tt>
+<tt>v1.4  -Setup Volume in relation to maximum volume of the device</tt>
+<tt>v1.3  -Lock screen disable fixed</tt>
+<tt>v1.2  -Added a bunch of features</tt>
+<tt>v1.1  -First plain release... Gone and forgotten</tt>
 
 == News
 
