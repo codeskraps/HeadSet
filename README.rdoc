@@ -1,0 +1,60 @@
+= HeadSet
+
+* <b>Homepage:</b>
+* <b>Git:</b> https://github.com/heepie/HeadSet
+* <b>Author:</b> Carles Sentis  
+* <b>License:</b> GPL v3
+* <b>Latest Version:</b> 1.6
+* <b>Release Date:</b> Tue Apr 10, 2012
+
+== General Infromation
+
+This is an app for Android powered devices. HeadSet is an application for customising Android when a headSet/headPhones are plug into the device
+
+== Authors
+
+Carles Sentis codeskraps@gmail.com
+
+
+== Thanks
+
+
+== ChangeLog
+
+v1.6  -First official release. Added Licenses
+v1.5  -Wake from full sleep
+v1.4  -Setup Volume in relation to maximum volume of the device
+v1.3  -Lock screen disable fixed
+v1.2  -Added a bunch of features
+v1.1  -First plain release... Gone and forgotten
+
+== News
+
+
+== Install
+
+
+== Copyright/License
+
+<tt>HeadSet Copyright (C) Carles Sentis 2012 codeskraps@gmail.com</tt>
+
+<tt>HeadSet is free software: you can
+redistribute it and/or modify it under the terms
+of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of
+the License, or (at your option) any later
+version.</tt>
+
+<tt>HeadSet is distributed in the hope that it
+will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+General Public License for more details.</tt>
+
+<tt>You should have received a copy of the GNU
+General Public License along with this program.
+If not, see http://www.gnu.org/licenses.</tt>
+
+
+== Bugs
+
