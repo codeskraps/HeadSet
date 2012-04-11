@@ -49,26 +49,34 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 	private static final String SHAREDPREFS = "sharedprefs";
 	private static final String CHKAUTOSTART = "chkautostart";
 	private static final String WAKEUP = "WAKEUP";
-	private static final String SPNCONAUTOONOFF = "spnConAutoOnOff";
-	private static final String SPNDISAUTOONOFF = "spnDisAutoOnOff";
 	private static final String CHKCONAUTOROTATE = "chkConAutoRotate";
+	private static final String SPNCONAUTOONOFF = "spnConAutoOnOff";
+	private static final String CHKCONRINGVIB = "chkconringvib";
+	private static final String SPNCONRINGVIBONOFF = "spnconringvibonoff";
+	private static final String CHKCONAPP = "chkConApp";
 	private static final String CHKCONMEDIAVOL = "chkconmediavol";
 	private static final String SKBCONMEDIAVOL = "skbconmediavol";
 	private static final String CHKDISAUTOROTATE = "chkDisAutoRotate";
-	private static final String CHKCONAPP = "chkConApp";
+	private static final String SPNDISAUTOONOFF = "spnDisAutoOnOff";
+	private static final String CHKDISRINGVIB = "chkdisringvib";
+	private static final String SPNDISRINGVIBONOFF = "spndisringvibonoff";
 	private static final String STARTAPP = "startapp";
-	
+		
 	private SharedPreferences prefs = null;
 	private CheckBox chkAutoStart = null;
 	private CheckBox chkWakeUp = null;
 	private CheckBox chkConAutoRotate = null;
+	private Spinner spnConRotateOnOff = null;
+	private CheckBox chkConRingVib = null;
+	private Spinner spnConRingVibOnOff = null;
 	private CheckBox chkConApp = null;
+	private Button btnConApp = null;
 	private CheckBox chkConMediaVol = null;
 	private SeekBar skbConMediaVol = null;
 	private CheckBox chkDisAutoRotate = null;
-	private Spinner spnConRotateOnOff = null;
-	private Button btnConApp = null;
 	private Spinner spnDisRotateOnOff = null;
+	private CheckBox chkDisRingVib = null;
+	private Spinner spnDisRingVibOnOff = null;
 	private Button btnStartService = null;
 	
 	@Override
@@ -83,25 +91,33 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 		chkAutoStart = (CheckBox) findViewById(R.id.chkAutoStart);
 		chkWakeUp = (CheckBox) findViewById(R.id.chkWakeUp);
 		chkConAutoRotate = (CheckBox) findViewById(R.id.chkConAutoRotate);
+		spnConRotateOnOff = (Spinner) findViewById(R.id.spnConAutoOnOff);
+		chkConRingVib = (CheckBox) findViewById(R.id.chkConRingVib);
+		spnConRingVibOnOff = (Spinner) findViewById(R.id.spnConRingVibOnOff);
 		chkConApp = (CheckBox) findViewById(R.id.chkConApp);
+		btnConApp = (Button) findViewById(R.id.btnConApp);
 		chkConMediaVol = (CheckBox) findViewById(R.id.chkConMediaVolume);
 		skbConMediaVol = (SeekBar) findViewById(R.id.skbConVolume);
 		chkDisAutoRotate = (CheckBox) findViewById(R.id.chkDisAutoRotate);
-		spnConRotateOnOff = (Spinner) findViewById(R.id.spnConAutoOnOff);
-		btnConApp = (Button) findViewById(R.id.btnConApp);
 		spnDisRotateOnOff = (Spinner) findViewById(R.id.spnDisAutoOnOff);
+		chkDisRingVib = (CheckBox) findViewById(R.id.chkDisRingVib);
+		spnDisRingVibOnOff = (Spinner) findViewById(R.id.spnDisRingVibOnOff);
 		btnStartService = (Button) findViewById(R.id.btnStartService);
 		
 		chkAutoStart.setOnCheckedChangeListener(this);
 		chkWakeUp.setOnCheckedChangeListener(this);
 		chkConAutoRotate.setOnCheckedChangeListener(this);
+		spnConRotateOnOff.setOnItemSelectedListener(this);
+		chkConRingVib.setOnCheckedChangeListener(this);
+		spnConRingVibOnOff.setOnItemSelectedListener(this);
 		chkConApp.setOnCheckedChangeListener(this);
+		btnConApp.setOnClickListener(this);
 		chkConMediaVol.setOnCheckedChangeListener(this);
 		skbConMediaVol.setOnSeekBarChangeListener(this);
 		chkDisAutoRotate.setOnCheckedChangeListener(this);
-		spnConRotateOnOff.setOnItemSelectedListener(this);
-		btnConApp.setOnClickListener(this);
 		spnDisRotateOnOff.setOnItemSelectedListener(this);
+		chkDisRingVib.setOnCheckedChangeListener(this);
+		spnDisRingVibOnOff.setOnItemSelectedListener(this);
 		btnStartService.setOnClickListener(this);
 		
 		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
@@ -110,7 +126,9 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 		
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spnConRotateOnOff.setAdapter(arrayAdapter);
+		spnConRingVibOnOff.setAdapter(arrayAdapter);
 		spnDisRotateOnOff.setAdapter(arrayAdapter);
+		spnDisRingVibOnOff.setAdapter(arrayAdapter);
 		
 		skbConMediaVol.setProgress(prefs.getInt(SKBCONMEDIAVOL, 0));
 	}
@@ -127,25 +145,29 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 			chkWakeUp.setChecked(true);
 		else chkWakeUp.setChecked(false);
 		
-		if (prefs.getBoolean(SPNCONAUTOONOFF, true)) 
-			spnConRotateOnOff.setSelection(0);
-		else spnConRotateOnOff.setSelection(1);
-		
-		if (prefs.getBoolean(SPNDISAUTOONOFF, true))
-			spnDisRotateOnOff.setSelection(0);
-		else spnDisRotateOnOff.setSelection(1);
-		
 		if (prefs.getBoolean(CHKCONAUTOROTATE, false))
 			chkConAutoRotate.setChecked(true);
 		else chkConAutoRotate.setChecked(false);
 		
-		if (prefs.getBoolean(CHKDISAUTOROTATE, false))
-			chkDisAutoRotate.setChecked(true);
-		else chkDisAutoRotate.setChecked(false);
+		if (prefs.getBoolean(SPNCONAUTOONOFF, true)) 
+			spnConRotateOnOff.setSelection(0);
+		else spnConRotateOnOff.setSelection(1);
+		
+		if (prefs.getBoolean(CHKCONRINGVIB, false))
+			chkConRingVib.setChecked(true);
+		else chkConRingVib.setChecked(false);
+		
+		if (prefs.getBoolean(SPNCONRINGVIBONOFF, true)) 
+			spnConRingVibOnOff.setSelection(0);
+		else spnConRingVibOnOff.setSelection(1);
 		
 		if (prefs.getBoolean(CHKCONAPP, false))
 			chkConApp.setChecked(true);
 		else chkConApp.setChecked(false);
+		
+		if (prefs.getString(STARTAPP, STARTAPP).equals(STARTAPP))
+			btnConApp.setText("Set app...");
+		else btnConApp.setText(prefs.getString(STARTAPP, STARTAPP));
 		
 		if (prefs.getBoolean(CHKCONMEDIAVOL, false)) {
 			chkConMediaVol.setChecked(true);
@@ -155,9 +177,21 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 			skbConMediaVol.setEnabled(false);
 		}
 		
-		if (prefs.getString(STARTAPP, STARTAPP).equals(STARTAPP))
-			btnConApp.setText("Set app...");
-		else btnConApp.setText(prefs.getString(STARTAPP, STARTAPP));
+		if (prefs.getBoolean(CHKDISAUTOROTATE, false))
+			chkDisAutoRotate.setChecked(true);
+		else chkDisAutoRotate.setChecked(false);
+		
+		if (prefs.getBoolean(SPNDISAUTOONOFF, true))
+			spnDisRotateOnOff.setSelection(0);
+		else spnDisRotateOnOff.setSelection(1);
+		
+		if (prefs.getBoolean(CHKDISRINGVIB, false))
+			chkDisRingVib.setChecked(true);
+		else chkDisRingVib.setChecked(false);
+		
+		if (prefs.getBoolean(SPNDISRINGVIBONOFF, true)) 
+			spnDisRingVibOnOff.setSelection(0);
+		else spnDisRingVibOnOff.setSelection(1);
 	}
 
 	@Override
@@ -175,12 +209,30 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 			
 			break;
 		
+		case R.id.spnConRingVibOnOff:
+			Log.d(TAG, "spnConRingVibOnOff, position: " + position);
+			
+			if (position == 0) 
+				editor.putBoolean(SPNCONRINGVIBONOFF, true);
+			else editor.putBoolean(SPNCONRINGVIBONOFF, false);
+			
+			break;
+			
 		case R.id.spnDisAutoOnOff: 
 			Log.d(TAG, "spnDisAutoOnOff, position: " + position);
 			
 			if (position == 0) 
 				editor.putBoolean(SPNDISAUTOONOFF, true);
 			else editor.putBoolean(SPNDISAUTOONOFF, false);
+			
+			break;
+			
+		case R.id.spnDisRingVibOnOff:
+			Log.d(TAG, "spnDisRingVibOnOff, position: " + position);
+			
+			if (position == 0) 
+				editor.putBoolean(SPNDISRINGVIBONOFF, true);
+			else editor.putBoolean(SPNDISRINGVIBONOFF, false);
 			
 			break;
 		}
@@ -232,21 +284,21 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 			else editor.putBoolean(CHKCONAUTOROTATE, false);
 			
 			break;
+		
+		case R.id.chkConRingVib:
 			
-		case R.id.chkDisAutoRotate:
-			
-			if (state) editor.putBoolean(CHKDISAUTOROTATE, true);
-			else editor.putBoolean(CHKDISAUTOROTATE, false);
+			if (state) editor.putBoolean(CHKCONRINGVIB, true);
+			else editor.putBoolean(CHKCONRINGVIB, false);
 			
 			break;
-		
+			
 		case R.id.chkConApp:
 			
 			if (state) editor.putBoolean(CHKCONAPP, true);
 			else editor.putBoolean(CHKCONAPP, false);
 			
 			break;
-			
+		
 		case R.id.chkConMediaVolume:
 			
 			if (state) {
@@ -256,6 +308,20 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 				editor.putBoolean(CHKCONMEDIAVOL, false);
 				skbConMediaVol.setEnabled(false);
 			}
+			
+			break;
+		
+		case R.id.chkDisAutoRotate:
+			
+			if (state) editor.putBoolean(CHKDISAUTOROTATE, true);
+			else editor.putBoolean(CHKDISAUTOROTATE, false);
+			
+			break;
+		
+		case R.id.chkDisRingVib:
+			
+			if (state) editor.putBoolean(CHKDISRINGVIB, true);
+			else editor.putBoolean(CHKDISRINGVIB, false);
 			
 			break;
 		}

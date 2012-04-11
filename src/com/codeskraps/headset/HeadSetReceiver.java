@@ -38,16 +38,20 @@ public class HeadSetReceiver extends BroadcastReceiver {
 	private static final String TAG = "HeadSet";
 	private static final String SHAREDPREFS = "sharedprefs";
 	private static final String WAKEUP = "WAKEUP";
-	private static final String SPNCONAUTOONOFF = "spnConAutoOnOff";
-	private static final String SPNDISAUTOONOFF = "spnDisAutoOnOff";
 	private static final String CHKCONAUTOROTATE = "chkConAutoRotate";
-	private static final String CHKDISAUTOROTATE = "chkDisAutoRotate";
+	private static final String SPNCONAUTOONOFF = "spnConAutoOnOff";
+	private static final String CHKCONRINGVIB = "chkconringvib";
+	private static final String SPNCONRINGVIBONOFF = "spnconringvibonoff";
 	private static final String CHKCONAPP = "chkConApp";
+	private static final String CHKCONMEDIAVOL = "chkconmediavol";
+	private static final String SKBCONMEDIAVOL = "skbconmediavol";
+	private static final String CHKDISAUTOROTATE = "chkDisAutoRotate";
+	private static final String SPNDISAUTOONOFF = "spnDisAutoOnOff";
+	private static final String CHKDISRINGVIB = "chkdisringvib";
+	private static final String SPNDISRINGVIBONOFF = "spndisringvibonoff";
 	private static final String STARTAPP = "startapp";
 	private static final String STARTAPPPACKAGE = "startapppackage";
 	private static final String STARTAPPACTIVITY = "startactivity";
-	private static final String CHKCONMEDIAVOL = "chkconmediavol";
-	private static final String SKBCONMEDIAVOL = "skbconmediavol";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -58,6 +62,8 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		String lab = prefs.getString(STARTAPP, STARTAPP);
 		String pac = prefs.getString(STARTAPPPACKAGE, STARTAPPPACKAGE);
 		String act = prefs.getString(STARTAPPACTIVITY, STARTAPPACTIVITY);
+		
+		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		
 		KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
 		final KeyguardManager.KeyguardLock kl = km.newKeyguardLock(lab);
@@ -75,6 +81,19 @@ public class HeadSetReceiver extends BroadcastReceiver {
 			
 			if (prefs.getBoolean(WAKEUP, false)) kl.reenableKeyguard();
 			
+			if (prefs.getBoolean(CHKDISRINGVIB, false)) {
+				if (prefs.getBoolean(SPNDISRINGVIBONOFF, true)) {
+					audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
+					//System.putInt(context.getContentResolver(), VIBRATE_IN_SILENT, 0);
+				} else {
+					audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
+				}
+			}
+			
 		} else {
 			Log.d(TAG, "HeadSet connected");
 
@@ -86,8 +105,20 @@ public class HeadSetReceiver extends BroadcastReceiver {
 					android.provider.Settings.System.putInt(context.getContentResolver(),
 							android.provider.Settings.System.ACCELEROMETER_ROTATION, 0);
 
+			if (prefs.getBoolean(CHKCONRINGVIB, false)) {
+				if (prefs.getBoolean(SPNCONRINGVIBONOFF, true)) {
+					audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
+					//System.putInt(context.getContentResolver(), VIBRATE_IN_SILENT, 0);
+				} else {
+					audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
+					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
+				}
+			}
+			
 			if (prefs.getBoolean(CHKCONMEDIAVOL, false)) {
-				AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
 				int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 				

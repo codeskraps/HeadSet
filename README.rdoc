@@ -21,6 +21,7 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
+<tt>v1.7  -Added set phone in vibrate when headset/headphone connected/disconnected</tt>
 <tt>v1.6  -First official release. Added Licenses</tt>
 <tt>v1.5  -Wake from full sleep</tt>
 <tt>v1.4  -Setup Volume in relation to maximum volume of the device</tt>

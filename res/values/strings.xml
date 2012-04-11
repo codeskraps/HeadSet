@@ -31,6 +31,7 @@
     <string name="wakeUp">Wake up phone and bypass the lock screen on auto-start app</string>
     <string name="catConnected">On headset connected</string>
     <string name="conVolume">Set media volume</string>
+    <string name="setphonevibrate">Set the phone on vibrate</string>
     <string name="catDisconnected">On headset disconnected</string>
     <string name="autoRotate">Auto-rotate screen</string>
     <string-array name="onOff">
