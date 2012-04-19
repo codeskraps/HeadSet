@@ -21,6 +21,7 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
+<tt>v1.8  -Enabled fast scroll in list applications
 <tt>v1.7  -Added set phone in vibrate when headset/headphone connected/disconnected</tt>
 <tt>v1.6  -First official release. Added Licenses</tt>
 <tt>v1.5  -Wake from full sleep</tt>
