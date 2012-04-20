@@ -57,17 +57,22 @@ public class WakeUpActivity extends Activity {
 		
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
-				PowerManager.SCREEN_BRIGHT_WAKE_LOCK, lab);
+				PowerManager.SCREEN_BRIGHT_WAKE_LOCK, act);
 		
-		final Window win = getWindow();
-		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-		              | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); 
-		win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-		              | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+//		final Window win = getWindow();
+//		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+//		              | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD); 
+//		win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+//		              | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+		
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
+			    | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+			    | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 		
 		
 		try {
 			wl.acquire();
+			//pm.userActivity(SystemClock.uptimeMillis(), false);
 			
 			Intent i = new Intent(Intent.ACTION_MAIN, null);
 			i.addCategory(Intent.CATEGORY_LAUNCHER);

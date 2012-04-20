@@ -68,7 +68,7 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		
 		KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-		final KeyguardManager.KeyguardLock kl = km.newKeyguardLock(lab);
+		final KeyguardManager.KeyguardLock kl = km.newKeyguardLock(act);
 
 		if (intent.getExtras().getInt("state") == 0) {
 			Log.d(TAG, "HeadSet disconnected");
