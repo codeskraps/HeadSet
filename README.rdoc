@@ -3,8 +3,8 @@
 * <b>Homepage:</b>
 * <b>Git:</b> https://github.com/heepie/HeadSet
 * <b>Author:</b> Carles Sentis  
-* <b>License:</b> GPL v3
-* <b>Latest Version:</b> 1.6
+* <b>License:</b> GNU GPL v3
+* <b>Latest Version:</b> 1.9
 * <b>Release Date:</b> Tue Apr 10, 2012
 
 == General Infromation
@@ -21,7 +21,8 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
-<tt>v1.8  -Enabled fast scroll in list applications
+<tt>v1.9  -Stops HeadSet to get called again while headset/headphones already plugged in</tt> 
+<tt>v1.8  -Enabled fast scroll in list applications</tt>
 <tt>v1.7  -Added set phone in vibrate when headset/headphone connected/disconnected</tt>
 <tt>v1.6  -First official release. Added Licenses</tt>
 <tt>v1.5  -Wake from full sleep</tt>

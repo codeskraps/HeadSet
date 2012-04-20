@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,6 +38,7 @@ public class WakeUpActivity extends Activity {
 
 	private static final String TAG = "HeadSet";
 	private static final String SHAREDPREFS = "sharedprefs";
+	private static final String STARTAPP = "startapp";
 	private static final String STARTAPPPACKAGE = "startapppackage";
 	private static final String STARTAPPACTIVITY = "startactivity";
 	
@@ -51,6 +53,11 @@ public class WakeUpActivity extends Activity {
 		
 		String pac = prefs.getString(STARTAPPPACKAGE, STARTAPPPACKAGE);
 		String act = prefs.getString(STARTAPPACTIVITY, STARTAPPACTIVITY);
+		String lab = prefs.getString(STARTAPP, STARTAPP);
+		
+		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
+				PowerManager.SCREEN_BRIGHT_WAKE_LOCK, lab);
 		
 		final Window win = getWindow();
 		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
@@ -60,11 +67,16 @@ public class WakeUpActivity extends Activity {
 		
 		
 		try {
+			wl.acquire();
+			
 			Intent i = new Intent(Intent.ACTION_MAIN, null);
 			i.addCategory(Intent.CATEGORY_LAUNCHER);
 			i.setComponent(new ComponentName(pac, act));
 			i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
+			
+			wl.release();
+			
 		} catch (Exception e) {
 			Log.d(TAG, "Error WakeUp: " + e);
 			Toast.makeText(this, "HeadSet - Couldn't launch the app", Toast.LENGTH_SHORT).show();

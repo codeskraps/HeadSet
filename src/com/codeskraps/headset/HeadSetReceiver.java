@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
-import android.os.PowerManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -52,6 +51,7 @@ public class HeadSetReceiver extends BroadcastReceiver {
 	private static final String STARTAPP = "startapp";
 	private static final String STARTAPPPACKAGE = "startapppackage";
 	private static final String STARTAPPACTIVITY = "startactivity";
+	private static final String ISCONNECTED = "isconnected";
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -59,9 +59,11 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		SharedPreferences prefs = context.getSharedPreferences(SHAREDPREFS,
 				Context.MODE_PRIVATE);
 		
+		SharedPreferences.Editor editor = prefs.edit();
 		String lab = prefs.getString(STARTAPP, STARTAPP);
 		String pac = prefs.getString(STARTAPPPACKAGE, STARTAPPPACKAGE);
 		String act = prefs.getString(STARTAPPACTIVITY, STARTAPPACTIVITY);
+		boolean isConnected = prefs.getBoolean(ISCONNECTED, false); 
 		
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		
@@ -70,6 +72,9 @@ public class HeadSetReceiver extends BroadcastReceiver {
 
 		if (intent.getExtras().getInt("state") == 0) {
 			Log.d(TAG, "HeadSet disconnected");
+			
+			editor.putBoolean(ISCONNECTED, false);
+			editor.commit();
 
 			if (prefs.getBoolean(CHKDISAUTOROTATE, false)) 
 				if (prefs.getBoolean(SPNDISAUTOONOFF, true)) 
@@ -79,24 +84,32 @@ public class HeadSetReceiver extends BroadcastReceiver {
 					android.provider.Settings.System.putInt(context.getContentResolver(),
 							android.provider.Settings.System.ACCELEROMETER_ROTATION, 0);
 			
-			if (prefs.getBoolean(WAKEUP, false)) kl.reenableKeyguard();
+			if (prefs.getBoolean(WAKEUP, false)){
+				Log.d(TAG, "reenableKeyguard, release");
+				kl.reenableKeyguard();
+				//wl.release();
+			}
 			
 			if (prefs.getBoolean(CHKDISRINGVIB, false)) {
 				if (prefs.getBoolean(SPNDISRINGVIBONOFF, true)) {
 					audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
 					//System.putInt(context.getContentResolver(), VIBRATE_IN_SILENT, 0);
 				} else {
 					audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
 				}
 			}
 			
-		} else {
+		} else if (intent.getExtras().getInt("state") == 1 && isConnected == false) {
+			
 			Log.d(TAG, "HeadSet connected");
 
+			editor.putBoolean(ISCONNECTED, true);
+			editor.commit();
+			
 			if (prefs.getBoolean(CHKCONAUTOROTATE, false))
 				if (prefs.getBoolean(SPNCONAUTOONOFF, true))
 					android.provider.Settings.System.putInt(context.getContentResolver(),
@@ -108,13 +121,13 @@ public class HeadSetReceiver extends BroadcastReceiver {
 			if (prefs.getBoolean(CHKCONRINGVIB, false)) {
 				if (prefs.getBoolean(SPNCONRINGVIBONOFF, true)) {
 					audioManager.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_ON);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_ON);
 					//System.putInt(context.getContentResolver(), VIBRATE_IN_SILENT, 0);
 				} else {
 					audioManager.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
-					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_RINGER, AudioManager.VIBRATE_SETTING_OFF);
+//					audioManager.setVibrateSetting(AudioManager.VIBRATE_TYPE_NOTIFICATION, AudioManager.VIBRATE_SETTING_OFF);
 				}
 			}
 			
@@ -134,20 +147,13 @@ public class HeadSetReceiver extends BroadcastReceiver {
 					
 					if (!lab.equals(STARTAPP)) {
 						
-						PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-						PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | 
-								PowerManager.SCREEN_BRIGHT_WAKE_LOCK, lab);
-						
 						if (prefs.getBoolean(WAKEUP, false)) {
 							
-							wl.acquire();
 							kl.disableKeyguard();
 							
 							Intent i = new Intent(new Intent(context, WakeUpActivity.class));
 							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 							context.startActivity(i);
-							
-							wl.release();
 							
 						} else {
 
