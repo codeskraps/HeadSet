@@ -28,5 +28,10 @@
 	    android:id="@+id/menuFeedback"
 	    android:icon="@android:drawable/ic_menu_send"
 	    android:title="@string/menuFeedback"/>
+	
+	<item 
+	    android:id="@+id/menuBuyMeAPint"
+	    android:icon="@drawable/mug_bw"
+	    android:title="@string/menuBuyMeAPint" />
 
 </menu>

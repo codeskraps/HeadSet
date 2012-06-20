@@ -25,6 +25,7 @@ package com.codeskraps.headset;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,8 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.SeekBar;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 
@@ -351,6 +352,24 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 			emailIntent.setType("plain/text");  
 			
 			startActivity(Intent.createChooser(emailIntent, "Send your feedback in:"));
+			
+			break;
+		
+		case R.id.menuBuyMeAPint:
+			
+			try {
+				Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+				marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
+						Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				startActivity(marketIntent.setData(Uri.parse("market://developer?id=Codeskraps")));
+			} catch (Exception e) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
+						Uri.parse("http://play.google.com/store/apps/developer?id=Codeskraps"));
+				browserIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
+						Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+				startActivity(browserIntent);
+				Log.e(TAG, e.getMessage());
+			}
 			
 			break;
 		}

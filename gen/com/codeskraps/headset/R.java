@@ -23,8 +23,9 @@ public final class R {
         public static final int background_fill=0x7f020000;
         public static final int custom_tab_indicator_unselected_pressed=0x7f020001;
         public static final int ic_launcher=0x7f020002;
-        public static final int progress=0x7f020003;
-        public static final int progress_fill=0x7f020004;
+        public static final int mug_bw=0x7f020003;
+        public static final int progress=0x7f020004;
+        public static final int progress_fill=0x7f020005;
     }
     public static final class id {
         public static final int btnConApp=0x7f080009;
@@ -38,6 +39,7 @@ public final class R {
         public static final int chkDisRingVib=0x7f08000e;
         public static final int chkWakeUp=0x7f080003;
         public static final int llProgress=0x7f080000;
+        public static final int menuBuyMeAPint=0x7f080014;
         public static final int menuFeedback=0x7f080013;
         public static final int rowImage=0x7f080011;
         public static final int rowText=0x7f080012;
@@ -66,6 +68,7 @@ public final class R {
         public static final int catGeneral=0x7f050002;
         public static final int conVolume=0x7f050006;
         public static final int iconImageDescription=0x7f050001;
+        public static final int menuBuyMeAPint=0x7f05000d;
         public static final int menuFeedback=0x7f05000c;
         public static final int setphonevibrate=0x7f050007;
         public static final int startService=0x7f05000b;

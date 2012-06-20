@@ -41,5 +41,6 @@
     <string name="autostartapp">Auto-start app</string>
     <string name="startService">Start</string>
     <string name="menuFeedback">Feedback</string>
+    <string name="menuBuyMeAPint">Buy me a pint</string>
 
 </resources>
