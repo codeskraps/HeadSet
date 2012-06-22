@@ -41,6 +41,11 @@
     <string name="autostartapp">Auto-start app</string>
     <string name="startService">Start</string>
     <string name="menuFeedback">Feedback</string>
-    <string name="menuBuyMeAPint">Buy me a pint</string>
+    <string name="menuBuyMeAPint">Buy me a beer</string>
+    <string name="donationSummary">HeadSet is a free and open source app. You can support it with a small donation.\n\nAny donations will help to keep my apps free and regularly updated.\n\nDonation is easy: touch any of the beers below and you will be redirected to Google Play where you can make a little Donation.</string>
+    <string name="donationOne">€ 1.00</string>
+    <string name="donationTwo">€ 2.00</string>
+    <string name="donationFive">€ 5.00</string>
+    <string name="donationTen">€ 10.00</string>
 
 </resources>

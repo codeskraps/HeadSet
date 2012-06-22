@@ -30,7 +30,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 

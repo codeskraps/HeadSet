@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  HeadSet
+  Copyright (C) Carles Sentis 2011 <codeskraps@gmail.com>
+ 
+  HeadSet is free software: you can
+  redistribute it and/or modify it under the terms
+  of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of
+  the License, or (at your option) any later
+  version.
+   
+  HeadSet is distributed in the hope that it
+  will be useful, but WITHOUT ANY WARRANTY; without
+  even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  General Public License for more details.
+   
+  You should have received a copy of the GNU
+  General Public License along with this program.
+  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#222222"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/ic_launcher"
+            android:contentDescription="@string/iconImageDescription" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/app_name"
+            android:textColor="@color/themeColor"
+            android:textSize="25dp"
+            android:typeface="normal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#666666"
+        android:orientation="horizontal" />
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dip"
+                android:text="@string/donationSummary"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/txtGlass"
+                    style="@style/donationImage"
+                    android:drawableTop="@drawable/glass_beer"
+                    android:text="@string/donationOne" />
+
+                <TextView
+                    android:id="@+id/txtPint"
+                    style="@style/donationImage"
+                    android:drawableTop="@drawable/pint_beer"
+                    android:text="@string/donationTwo" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/txtMug"
+                    style="@style/donationImage"
+                    android:layout_marginBottom="30dip"
+                    android:drawableTop="@drawable/mug_beer"
+                    android:text="@string/donationFive" />
+
+                <TextView
+                    android:id="@+id/txtBarrel"
+                    style="@style/donationImage"
+                    android:layout_marginBottom="30dip"
+                    android:drawableTop="@drawable/barrel_beer"
+                    android:text="@string/donationTen" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

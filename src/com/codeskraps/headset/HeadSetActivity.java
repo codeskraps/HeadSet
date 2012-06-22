@@ -357,19 +357,7 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 		
 		case R.id.menuBuyMeAPint:
 			
-			try {
-				Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-				marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
-						Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				startActivity(marketIntent.setData(Uri.parse("market://developer?id=Codeskraps")));
-			} catch (Exception e) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
-						Uri.parse("http://play.google.com/store/apps/developer?id=Codeskraps"));
-				browserIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
-						Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-				startActivity(browserIntent);
-				Log.e(TAG, e.getMessage());
-			}
+			startActivity(new Intent(this, DonationActivity.class));
 			
 			break;
 		}
