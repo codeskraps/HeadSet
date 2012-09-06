@@ -166,30 +166,6 @@ public class InstalledAppActivity extends ListActivity {
 	    protected void onListItemClick(ListView list, View view, int position, long id) {
 	        ResolveInfoWrapper wrapper = (ResolveInfoWrapper) getListAdapter().getItem(position);
 	        ResolveInfo info = wrapper.getInfo();
-
-//	        // Build the intent for the chosen activity
-//	        Intent intent = new Intent();
-//	        intent.setComponent(new ComponentName(info.activityInfo.applicationInfo.packageName,
-//	                info.activityInfo.name));
-//	        Intent result = new Intent();
-//	        result.putExtra(Intent.EXTRA_SHORTCUT_INTENT, intent);
-//
-//	        // Set the name of the activity
-//	        result.putExtra(Intent.EXTRA_SHORTCUT_NAME, info.loadLabel(mPackageManager));
-//
-//	        // Build the icon info for the activity
-//	        Drawable drawable = info.loadIcon(mPackageManager);
-//	        if (drawable instanceof BitmapDrawable) {
-//	            BitmapDrawable bd = (BitmapDrawable) drawable;
-//	            result.putExtra(Intent.EXTRA_SHORTCUT_ICON, bd.getBitmap());
-//	        }
-////	        ShortcutIconResource iconResource = new ShortcutIconResource();
-////	        iconResource.packageName = info.activityInfo.packageName;
-////	        iconResource.resourceName = getResources().getResourceEntryName(info.getIconResource());
-////	        result.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
-//
-//	        // Set the result
-//	        setResult(RESULT_OK, result);
 	        
 	        Log.d(TAG, "info: " + info.loadLabel(mPackageManager));
 	        Log.d(TAG, "info: " + info.activityInfo.applicationInfo.packageName);

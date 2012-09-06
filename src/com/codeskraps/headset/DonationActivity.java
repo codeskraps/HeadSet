@@ -61,18 +61,10 @@ public class DonationActivity extends Activity implements OnClickListener {
 		String packageName = null;
 		
 		switch(v.getId()){
-		case R.id.txtGlass:
-			packageName = new String("com.codeskraps.glassdonation");
-			break;
-		case R.id.txtPint:
-			packageName = new String("com.codeskraps.pintdonation");
-			break;
-		case R.id.txtMug:
-			packageName = new String("com.codeskraps.mugdonation");
-			break;
-		case R.id.txtBarrel:
-			packageName = new String("com.codeskraps.barreldonation");
-			break;
+		case R.id.txtGlass: packageName = new String("com.codeskraps.glassdonation"); break;
+		case R.id.txtPint: packageName = new String("com.codeskraps.pintdonation"); break;
+		case R.id.txtMug: packageName = new String("com.codeskraps.mugdonation"); break;
+		case R.id.txtBarrel: packageName = new String("com.codeskraps.barreldonation"); break;
 		}
 		
 		try {
