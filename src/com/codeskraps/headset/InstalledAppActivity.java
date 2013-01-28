@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class InstalledAppActivity extends ListActivity {
 
@@ -52,7 +53,7 @@ public class InstalledAppActivity extends ListActivity {
 	private static final String STARTAPP = "startapp";
 	private static final String STARTAPPPACKAGE = "startapppackage";
 	private static final String STARTAPPACTIVITY = "startactivity";
-	
+
 	private PackageManager mPackageManager;
 	private LinearLayout llProgress = null;
 	private TextView txtProgress = null;
@@ -67,7 +68,7 @@ public class InstalledAppActivity extends ListActivity {
 		public ResolveInfoWrapper(ResolveInfo info) {
 			mInfo = info;
 		}
-		
+
 		@Override
 		public String toString() {
 			return mInfo.loadLabel(mPackageManager).toString();
@@ -81,8 +82,7 @@ public class InstalledAppActivity extends ListActivity {
 	private class ActivityAdapter extends ArrayAdapter<ResolveInfoWrapper> {
 		LayoutInflater mInflater;
 
-		public ActivityAdapter(Activity activity,
-				ArrayList<ResolveInfoWrapper> activities) {
+		public ActivityAdapter(Activity activity, ArrayList<ResolveInfoWrapper> activities) {
 			super(activity, 0, activities);
 			mInflater = activity.getLayoutInflater();
 		}
@@ -91,7 +91,7 @@ public class InstalledAppActivity extends ListActivity {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			final ResolveInfoWrapper info = getItem(position);
 			ViewHolder vHolder = null;
-			
+
 			if (convertView != null) {
 				vHolder = (ViewHolder) convertView.getTag();
 			} else {
@@ -100,7 +100,7 @@ public class InstalledAppActivity extends ListActivity {
 				vHolder = new ViewHolder();
 				vHolder.imgView = ((ImageView) convertView.findViewById(R.id.rowImage));
 				vHolder.txtView = ((TextView) convertView.findViewById(R.id.rowText));
-				
+
 				convertView.setTag(vHolder);
 			}
 
@@ -111,74 +111,82 @@ public class InstalledAppActivity extends ListActivity {
 			return convertView;
 		}
 	}
-	
+
 	public class ViewHolder {
 		ImageView imgView;
-		TextView txtView;	
+		TextView txtView;
 	}
-	
-	 private final class LoadingTask extends AsyncTask<Object, Object, ActivityAdapter> {
-	        public void onPreExecute() {
-	            llProgress.setVisibility(View.VISIBLE);
-	            txtProgress.setText("Loading installed apps...");
-	        }
 
-	        public ActivityAdapter doInBackground(Object... params) {
-	            // Load the activities
-	            Intent queryIntent = new Intent(Intent.ACTION_MAIN);
-	            List<ResolveInfo> list = mPackageManager.queryIntentActivities(queryIntent, 0);
+	private final class LoadingTask extends AsyncTask<Object, Object, ActivityAdapter> {
+		public void onPreExecute() {
+			llProgress.setVisibility(View.VISIBLE);
+			txtProgress.setText("Loading installed apps...");
+		}
 
-	            // Sort the list
-	            Collections.sort(list, new ResolveInfo.DisplayNameComparator(mPackageManager));
+		public ActivityAdapter doInBackground(Object... params) {
+			try {
+				// Load the activities
+				Intent queryIntent = new Intent(Intent.ACTION_MAIN);
+				queryIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+				List<ResolveInfo> list = mPackageManager.queryIntentActivities(queryIntent, 0);
 
-	            // Make the wrappers
-	            ArrayList<ResolveInfoWrapper> activities = new ArrayList<ResolveInfoWrapper>(list.size());
-	            for(ResolveInfo item : list) {
-	                activities.add(new ResolveInfoWrapper(item));
-	            }
-	            return new ActivityAdapter(InstalledAppActivity.this, activities);
-	        }
+				// Sort the list
+				Collections.sort(list, new ResolveInfo.DisplayNameComparator(mPackageManager));
 
-	        public void onPostExecute(ActivityAdapter result) {
-	            llProgress.setVisibility(View.GONE);
-	        	setListAdapter(result);
-	        }
-	    }
-	 
-	 @Override
-	    protected void onCreate(Bundle savedState) {
-	        super.onCreate(savedState);
+				// Make the wrappers
+				ArrayList<ResolveInfoWrapper> activities = new ArrayList<ResolveInfoWrapper>(
+						list.size());
+				for (ResolveInfo item : list) {
+					activities.add(new ResolveInfoWrapper(item));
+				}
+				return new ActivityAdapter(InstalledAppActivity.this, activities);
+			} catch (Exception e) {}
+			return null;
+		}
 
-	        setContentView(R.layout.listapps);
+		public void onPostExecute(ActivityAdapter result) {
+			if (result != null) {
+				llProgress.setVisibility(View.GONE);
+				setListAdapter(result);
+			} else Toast.makeText(InstalledAppActivity.this, "PackageManager just died!!!",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
 
-	        getListView().setTextFilterEnabled(true);
+	@Override
+	protected void onCreate(Bundle savedState) {
+		super.onCreate(savedState);
 
-	        mPackageManager = getPackageManager();
-	        
-	        llProgress = (LinearLayout) findViewById(R.id.llProgress);
-	        txtProgress = (TextView) findViewById(R.id.txtProgress);
+		setContentView(R.layout.listapps);
 
-	        // Start loading the data
-	        new LoadingTask().execute((Object[]) null);
-	    }
+		getListView().setTextFilterEnabled(true);
 
-	    @Override
-	    protected void onListItemClick(ListView list, View view, int position, long id) {
-	        ResolveInfoWrapper wrapper = (ResolveInfoWrapper) getListAdapter().getItem(position);
-	        ResolveInfo info = wrapper.getInfo();
-	        
-	        Log.d(TAG, "info: " + info.loadLabel(mPackageManager));
-	        Log.d(TAG, "info: " + info.activityInfo.applicationInfo.packageName);
-	        Log.d(TAG, "info: " + info.activityInfo.name);
-	        
-	        SharedPreferences prefs = getSharedPreferences(SHAREDPREFS, MODE_PRIVATE);
-			SharedPreferences.Editor editor = prefs.edit();
-			
-			editor.putString(STARTAPP, info.loadLabel(mPackageManager).toString());
-			editor.putString(STARTAPPPACKAGE, info.activityInfo.applicationInfo.packageName);
-			editor.putString(STARTAPPACTIVITY, info.activityInfo.name);
-			editor.commit();
-	        
-			finish();
-	    }
+		mPackageManager = getPackageManager();
+
+		llProgress = (LinearLayout) findViewById(R.id.llProgress);
+		txtProgress = (TextView) findViewById(R.id.txtProgress);
+
+		// Start loading the data
+		new LoadingTask().execute((Object[]) null);
+	}
+
+	@Override
+	protected void onListItemClick(ListView list, View view, int position, long id) {
+		ResolveInfoWrapper wrapper = (ResolveInfoWrapper) getListAdapter().getItem(position);
+		ResolveInfo info = wrapper.getInfo();
+
+		Log.d(TAG, "info: " + info.loadLabel(mPackageManager));
+		Log.d(TAG, "info: " + info.activityInfo.applicationInfo.packageName);
+		Log.d(TAG, "info: " + info.activityInfo.name);
+
+		SharedPreferences prefs = getSharedPreferences(SHAREDPREFS, MODE_PRIVATE);
+		SharedPreferences.Editor editor = prefs.edit();
+
+		editor.putString(STARTAPP, info.loadLabel(mPackageManager).toString());
+		editor.putString(STARTAPPPACKAGE, info.activityInfo.applicationInfo.packageName);
+		editor.putString(STARTAPPACTIVITY, info.activityInfo.name);
+		editor.commit();
+
+		finish();
+	}
 }

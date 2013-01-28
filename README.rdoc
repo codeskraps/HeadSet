@@ -4,7 +4,7 @@
 * <b>Git:</b> https://github.com/heepie/HeadSet
 * <b>Author:</b> Carles Sentis  
 * <b>License:</b> GNU GPL v3
-* <b>Latest Version:</b> 1.13
+* <b>Latest Version:</b> 1.14
 * <b>Release Date:</b> Tue Apr 10, 2012
 
 == General Infromation
@@ -21,6 +21,7 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
+<tt>v1.14 -Removing launchFeature and bug fix with packageManager
 <tt>v1.13 -Bug fix
 <tt>v1.12 -Launch home screen on disconnect
 <tt>v1.11 -Added donation activity
