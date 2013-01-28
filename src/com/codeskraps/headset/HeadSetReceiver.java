@@ -22,10 +22,6 @@
 
 package com.codeskraps.headset;
 
-import java.io.IOException;
-import java.util.List;
-
-import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -34,9 +30,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.PowerManager;
-import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
 public class HeadSetReceiver extends BroadcastReceiver {
 
@@ -78,16 +72,8 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, act);
 
-		if (intent.getExtras().getInt("state") == 0) {
+		if (intent.getExtras().getInt("state") == 0 && isConnected == true) {
 			Log.d(TAG, "HeadSet disconnected");
-
-			editor.putBoolean(ISCONNECTED, false);
-			editor.commit();
-
-			Intent startMain = new Intent(Intent.ACTION_MAIN);
-			startMain.addCategory(Intent.CATEGORY_HOME);
-			startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(startMain);
 
 			if (prefs.getBoolean(CHKDISAUTOROTATE, false))
 				if (prefs.getBoolean(SPNDISAUTOONOFF, true)) android.provider.Settings.System
@@ -122,9 +108,6 @@ public class HeadSetReceiver extends BroadcastReceiver {
 
 		} else if (intent.getExtras().getInt("state") == 1 && isConnected == false) {
 			Log.d(TAG, "HeadSet connected");
-
-			editor.putBoolean(ISCONNECTED, true);
-			editor.commit();
 
 			if (prefs.getBoolean(CHKCONAUTOROTATE, false))
 				if (prefs.getBoolean(SPNCONAUTOONOFF, true)) android.provider.Settings.System
@@ -164,33 +147,25 @@ public class HeadSetReceiver extends BroadcastReceiver {
 			}
 
 			if (prefs.getBoolean(CHKCONAPP, false)) {
-				try {
+				if (!lab.equals(STARTAPP)) {
 
-					if (!lab.equals(STARTAPP)) {
+					if (prefs.getBoolean(WAKEUP, false)) {
 
-						if (prefs.getBoolean(WAKEUP, false)) {
+						kl.disableKeyguard();
 
-							kl.disableKeyguard();
+						Intent i = new Intent(new Intent(context, WakeUpActivity.class));
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(i);
 
-							Intent i = new Intent(new Intent(context, WakeUpActivity.class));
-							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							context.startActivity(i);
+					} else {
 
-						} else {
-
-							Log.d(TAG, "Starting:" + pac);
-							Intent i = new Intent(Intent.ACTION_MAIN, null);
-							i.addCategory(Intent.CATEGORY_LAUNCHER);
-							i.setComponent(new ComponentName(pac, act));
-							i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							context.startActivity(i);
-
-						}
+						Log.d(TAG, "Starting:" + pac);
+						Intent i = new Intent(Intent.ACTION_MAIN, null);
+						i.addCategory(Intent.CATEGORY_LAUNCHER);
+						i.setComponent(new ComponentName(pac, act));
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						context.startActivity(i);
 					}
-				} catch (Exception e) {
-					Toast.makeText(context, "HeadSet - Couldn't launch the app", Toast.LENGTH_SHORT)
-							.show();
-					Log.d(TAG, "Error: " + e);
 				}
 			}
 		}

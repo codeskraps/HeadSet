@@ -23,18 +23,17 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.codeskraps.headset"
-    android:versionCode="12"
-    android:versionName="1.11" >
+    android:versionCode="15"
+    android:versionName="1.14" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="7"
         android:targetSdkVersion="10" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES" />
 
     <application
         android:icon="@drawable/ic_launcher"
