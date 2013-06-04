@@ -75,6 +75,9 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		if (intent.getExtras().getInt("state") == 0 && isConnected == true) {
 			Log.d(TAG, "HeadSet disconnected");
 
+			editor.putBoolean(ISCONNECTED, false);
+			editor.commit();
+
 			if (prefs.getBoolean(CHKDISAUTOROTATE, false))
 				if (prefs.getBoolean(SPNDISAUTOONOFF, true)) android.provider.Settings.System
 						.putInt(context.getContentResolver(),
@@ -108,6 +111,9 @@ public class HeadSetReceiver extends BroadcastReceiver {
 
 		} else if (intent.getExtras().getInt("state") == 1 && isConnected == false) {
 			Log.d(TAG, "HeadSet connected");
+
+			editor.putBoolean(ISCONNECTED, true);
+			editor.commit();
 
 			if (prefs.getBoolean(CHKCONAUTOROTATE, false))
 				if (prefs.getBoolean(SPNCONAUTOONOFF, true)) android.provider.Settings.System
