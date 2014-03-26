@@ -20,7 +20,11 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.activities;
+
+import com.codeskraps.headset.R;
+import com.codeskraps.headset.R.id;
+import com.codeskraps.headset.R.layout;
 
 import android.app.Activity;
 import android.content.Intent;

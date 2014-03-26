@@ -20,66 +20,52 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class InstalledAppActivity extends ListActivity {
+import com.codeskraps.headset.R;
+import com.codeskraps.headset.misc.AppWrapper;
+import com.codeskraps.headset.misc.Cons;
+import com.codeskraps.headset.misc.ResolveInfoWrapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
-	private static final String TAG = "HeadSet";
-	private static final String SHAREDPREFS = "sharedprefs";
-	private static final String STARTAPP = "startapp";
-	private static final String STARTAPPPACKAGE = "startapppackage";
-	private static final String STARTAPPACTIVITY = "startactivity";
+public class InstalledAppActivity extends ListActivity implements OnClickListener {
+	private static final String TAG = InstalledAppActivity.class.getSimpleName();
 
-	private PackageManager mPackageManager;
 	private LinearLayout llProgress = null;
 	private TextView txtProgress = null;
 
-	/**
-	 * This class is used to wrap ResolveInfo so that it can be filtered using
-	 * ArrayAdapter's built int filtering logic, which depends on toString().
-	 */
-	private final class ResolveInfoWrapper {
-		private ResolveInfo mInfo;
+	private ArrayList<AppWrapper> apps = new ArrayList<AppWrapper>();
 
-		public ResolveInfoWrapper(ResolveInfo info) {
-			mInfo = info;
-		}
-
-		@Override
-		public String toString() {
-			return mInfo.loadLabel(mPackageManager).toString();
-		}
-
-		public ResolveInfo getInfo() {
-			return mInfo;
-		}
-	}
-
-	private class ActivityAdapter extends ArrayAdapter<ResolveInfoWrapper> {
+	private class ActivityAdapter extends ArrayAdapter<ResolveInfoWrapper> implements
+			OnCheckedChangeListener {
 		LayoutInflater mInflater;
 
 		public ActivityAdapter(Activity activity, ArrayList<ResolveInfoWrapper> activities) {
@@ -100,19 +86,57 @@ public class InstalledAppActivity extends ListActivity {
 				vHolder = new ViewHolder();
 				vHolder.imgView = ((ImageView) convertView.findViewById(R.id.rowImage));
 				vHolder.txtView = ((TextView) convertView.findViewById(R.id.rowText));
+				vHolder.chkView = ((CheckBox) convertView.findViewById(R.id.rowCheck));
+				vHolder.chkView.setOnCheckedChangeListener(this);
 
 				convertView.setTag(vHolder);
 			}
 
-			vHolder.txtView.setText(info.getInfo().loadLabel(mPackageManager));
-			Drawable d = info.getInfo().loadIcon(mPackageManager);
-			vHolder.imgView.setImageDrawable(d);
+			vHolder.txtView.setText(info.toString());
+			vHolder.imgView.setImageDrawable(info.getIcon());
+			vHolder.chkView.setTag(position);
+			vHolder.chkView.setChecked(info.getChecked());
 
 			return convertView;
+		}
+
+		@Override
+		public void onCheckedChanged(CompoundButton button, boolean state) {
+			int position = (Integer) button.getTag();
+			final ResolveInfoWrapper info = getItem(position);
+			info.setChecked(state);
+
+			if (state) {
+				String app = info.toString();
+				String packageName = info.getPackageName();
+				String activity = info.getActivity();
+
+				boolean found = false;
+				for (AppWrapper wrapper : apps) {
+					if (info.getPackageName().equals(wrapper.getPackageName())) found = true;
+				}
+				if (!found) {
+					apps.add(new AppWrapper(app, packageName, activity));
+					Log.v(TAG, "Added: " + info.getPackageName());
+				}
+
+			} else {
+				apps.remove(info.getPackageName());
+				for (AppWrapper wrapper : apps) {
+					if (info.getPackageName().equals(wrapper.getPackageName())) {
+						boolean result = apps.remove(wrapper);
+						Log.v(TAG, "removed:" + info.getPackageName() + ", result:" + result);
+						break;
+					}
+				}
+			}
+
+			Log.v(TAG, "lstCount:" + apps.size());
 		}
 	}
 
 	public class ViewHolder {
+		CheckBox chkView;
 		ImageView imgView;
 		TextView txtView;
 	}
@@ -128,19 +152,40 @@ public class InstalledAppActivity extends ListActivity {
 				// Load the activities
 				Intent queryIntent = new Intent(Intent.ACTION_MAIN);
 				queryIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-				List<ResolveInfo> list = mPackageManager.queryIntentActivities(queryIntent, 0);
+				List<ResolveInfo> list = getPackageManager().queryIntentActivities(queryIntent, 0);
 
 				// Sort the list
-				Collections.sort(list, new ResolveInfo.DisplayNameComparator(mPackageManager));
+				Collections.sort(list, new ResolveInfo.DisplayNameComparator(getPackageManager()));
 
 				// Make the wrappers
 				ArrayList<ResolveInfoWrapper> activities = new ArrayList<ResolveInfoWrapper>(
 						list.size());
+				SharedPreferences prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
+				String json = prefs.getString(Cons.STARTUPAPPS, new String());
+				Log.v(TAG, "Json:" + json);
+
+				if (json.length() > 1) {
+					apps = new Gson().fromJson(json,
+							new TypeToken<ArrayList<AppWrapper>>() {}.getType());
+					Log.v(TAG, "app:" + apps.size());
+				}
+
 				for (ResolveInfo item : list) {
-					activities.add(new ResolveInfoWrapper(item));
+					ResolveInfoWrapper wrapper = new ResolveInfoWrapper(getPackageManager(), item);
+					if (apps != null) {
+						for (AppWrapper launch : apps) {
+							if (launch.getPackageName().equals(
+									item.activityInfo.applicationInfo.packageName))
+								wrapper.setChecked(true);
+						}
+					}
+
+					activities.add(wrapper);
 				}
 				return new ActivityAdapter(InstalledAppActivity.this, activities);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				Log.i(TAG, "Handled: " + e.getMessage(), e);
+			}
 			return null;
 		}
 
@@ -160,8 +205,7 @@ public class InstalledAppActivity extends ListActivity {
 		setContentView(R.layout.listapps);
 
 		getListView().setTextFilterEnabled(true);
-
-		mPackageManager = getPackageManager();
+		findViewById(R.id.btnDone).setOnClickListener(this);
 
 		llProgress = (LinearLayout) findViewById(R.id.llProgress);
 		txtProgress = (TextView) findViewById(R.id.txtProgress);
@@ -170,22 +214,23 @@ public class InstalledAppActivity extends ListActivity {
 		new LoadingTask().execute((Object[]) null);
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
-	protected void onListItemClick(ListView list, View view, int position, long id) {
-		ResolveInfoWrapper wrapper = (ResolveInfoWrapper) getListAdapter().getItem(position);
-		ResolveInfo info = wrapper.getInfo();
-
-		Log.d(TAG, "info: " + info.loadLabel(mPackageManager));
-		Log.d(TAG, "info: " + info.activityInfo.applicationInfo.packageName);
-		Log.d(TAG, "info: " + info.activityInfo.name);
-
-		SharedPreferences prefs = getSharedPreferences(SHAREDPREFS, MODE_PRIVATE);
+	public void onClick(View v) {
+		SharedPreferences prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
 		SharedPreferences.Editor editor = prefs.edit();
 
-		editor.putString(STARTAPP, info.loadLabel(mPackageManager).toString());
-		editor.putString(STARTAPPPACKAGE, info.activityInfo.applicationInfo.packageName);
-		editor.putString(STARTAPPACTIVITY, info.activityInfo.name);
-		editor.commit();
+		String json = new String();
+
+		if (apps.size() > 0) {
+			json = new Gson().toJson(apps);
+			Log.v(TAG, "json app:" + json);
+			editor.putString(Cons.STARTUPAPPS, json);
+		} else editor.putString(Cons.STARTUPAPPS, new String());
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			editor.commit();
+		} else editor.apply();
 
 		finish();
 	}

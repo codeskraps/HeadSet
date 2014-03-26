@@ -32,63 +32,83 @@ public final class R {
         public static final int progress_fill=0x7f020009;
     }
     public static final class id {
-        public static final int btnConApp=0x7f09000d;
-        public static final int btnStartService=0x7f090014;
-        public static final int chkAutoStart=0x7f090006;
-        public static final int chkConApp=0x7f09000c;
-        public static final int chkConAutoRotate=0x7f090008;
-        public static final int chkConMediaVolume=0x7f09000e;
-        public static final int chkConRingVib=0x7f09000a;
-        public static final int chkDisAutoRotate=0x7f090010;
-        public static final int chkDisRingVib=0x7f090012;
-        public static final int chkWakeUp=0x7f090007;
-        public static final int llProgress=0x7f090004;
-        public static final int menuBuyMeAPint=0x7f090018;
-        public static final int menuFeedback=0x7f090017;
-        public static final int rowImage=0x7f090015;
-        public static final int rowText=0x7f090016;
-        public static final int skbConVolume=0x7f09000f;
-        public static final int spnConAutoOnOff=0x7f090009;
-        public static final int spnConRingVibOnOff=0x7f09000b;
-        public static final int spnDisAutoOnOff=0x7f090011;
-        public static final int spnDisRingVibOnOff=0x7f090013;
-        public static final int txtBarrel=0x7f090003;
-        public static final int txtGlass=0x7f090000;
-        public static final int txtMug=0x7f090002;
-        public static final int txtPint=0x7f090001;
-        public static final int txtProgress=0x7f090005;
+        public static final int btnConApp=0x7f090013;
+        public static final int btnDone=0x7f09000a;
+        public static final int btnStartService=0x7f09001a;
+        public static final int chkAutoStart=0x7f09000b;
+        public static final int chkConApp=0x7f090012;
+        public static final int chkConAutoRotate=0x7f09000e;
+        public static final int chkConMediaVolume=0x7f090014;
+        public static final int chkConRingVib=0x7f090010;
+        public static final int chkDisAutoRotate=0x7f090016;
+        public static final int chkDisRingVib=0x7f090018;
+        public static final int chkPowerConnected=0x7f09000d;
+        public static final int chkWakeUp=0x7f09000c;
+        public static final int dialog_root=0x7f090000;
+        public static final int gridview=0x7f090001;
+        public static final int listImage=0x7f090002;
+        public static final int llProgress=0x7f090008;
+        public static final int lstText=0x7f090003;
+        public static final int menuBuyMeAPint=0x7f09001f;
+        public static final int menuFeedback=0x7f09001e;
+        public static final int rowCheck=0x7f09001b;
+        public static final int rowImage=0x7f09001c;
+        public static final int rowText=0x7f09001d;
+        public static final int skbConVolume=0x7f090015;
+        public static final int spnConAutoOnOff=0x7f09000f;
+        public static final int spnConRingVibOnOff=0x7f090011;
+        public static final int spnDisAutoOnOff=0x7f090017;
+        public static final int spnDisRingVibOnOff=0x7f090019;
+        public static final int txtBarrel=0x7f090007;
+        public static final int txtGlass=0x7f090004;
+        public static final int txtMug=0x7f090006;
+        public static final int txtPint=0x7f090005;
+        public static final int txtProgress=0x7f090009;
     }
     public static final class layout {
-        public static final int donation=0x7f030000;
-        public static final int listapps=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int row=0x7f030003;
+        public static final int dialog=0x7f030000;
+        public static final int dialog_item=0x7f030001;
+        public static final int donation=0x7f030002;
+        public static final int listapps=0x7f030003;
+        public static final int main=0x7f030004;
+        public static final int row=0x7f030005;
     }
     public static final class menu {
         public static final int main=0x7f080000;
     }
     public static final class string {
         public static final int app_name=0x7f050000;
-        public static final int autoRotate=0x7f050009;
+        public static final int autoRotate=0x7f05000a;
         public static final int autoStart=0x7f050003;
-        public static final int autostartapp=0x7f05000a;
-        public static final int catConnected=0x7f050005;
-        public static final int catDisconnected=0x7f050008;
+        public static final int autostartapp=0x7f05000c;
+        public static final int btnDone=0x7f05000b;
+        public static final int catConnected=0x7f050006;
+        public static final int catDisconnected=0x7f050009;
         public static final int catGeneral=0x7f050002;
-        public static final int conVolume=0x7f050006;
-        public static final int donationFive=0x7f050011;
-        public static final int donationOne=0x7f05000f;
-        public static final int donationSummary=0x7f05000e;
-        public static final int donationTen=0x7f050012;
-        public static final int donationTwo=0x7f050010;
+        public static final int conVolume=0x7f050007;
+        public static final int donationFive=0x7f050013;
+        public static final int donationOne=0x7f050011;
+        public static final int donationSummary=0x7f050010;
+        public static final int donationTen=0x7f050014;
+        public static final int donationTwo=0x7f050012;
         public static final int iconImageDescription=0x7f050001;
-        public static final int menuBuyMeAPint=0x7f05000d;
-        public static final int menuFeedback=0x7f05000c;
-        public static final int setphonevibrate=0x7f050007;
-        public static final int startService=0x7f05000b;
+        public static final int menuBuyMeAPint=0x7f05000f;
+        public static final int menuFeedback=0x7f05000e;
+        public static final int powerConnected=0x7f050005;
+        public static final int setphonevibrate=0x7f050008;
+        public static final int startService=0x7f05000d;
         public static final int wakeUp=0x7f050004;
     }
     public static final class style {
-        public static final int donationImage=0x7f070000;
+        /** 
+        Base application theme for API 11+. This theme completely replaces
+        AppBaseTheme from res/values/styles.xml on API 11+ devices.
+    
+ API 11 theme customizations can go here. 
+         */
+        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppTheme=0x7f070001;
+        public static final int Theme_Transparent=0x7f070003;
+        public static final int donationImage=0x7f070002;
     }
 }

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-  HeadSet
+  sBrowser
   Copyright (C) Carles Sentis 2011 <codeskraps@gmail.com>
  
-  HeadSet is free software: you can
+  sBrowser is free software: you can
   redistribute it and/or modify it under the terms
   of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of
   the License, or (at your option) any later
   version.
    
-  HeadSet is distributed in the hope that it
+  sBrowser is distributed in the hope that it
   will be useful, but WITHOUT ANY WARRANTY; without
   even the implied warranty of MERCHANTABILITY or
   FITNESS FOR A PARTICULAR PURPOSE. See the GNU
@@ -24,29 +24,21 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal" >
-
-    <CheckBox
-        android:id="@+id/rowCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp" />
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
 
     <ImageView
-        android:id="@+id/rowImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_margin="10dp"
-        android:contentDescription="@string/iconImageDescription" />
+        android:id="@+id/listImage"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:gravity="center_horizontal" />
 
     <TextView
-        android:id="@+id/rowText"
-        android:layout_width="wrap_content"
+        android:id="@+id/lstText"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="10dp"
-        android:textSize="20sp" />
+        android:gravity="center_horizontal"
+        android:singleLine="true" />
 
 </LinearLayout>

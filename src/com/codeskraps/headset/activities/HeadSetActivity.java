@@ -20,11 +20,13 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -43,28 +45,18 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 
-public class HeadSetActivity extends Activity implements OnItemSelectedListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener {
+import com.codeskraps.headset.R;
+import com.codeskraps.headset.misc.Cons;
+import com.codeskraps.headset.services.ServiceListener;
 
-	private static final String TAG = "HeadSet";
-	private static final String SHAREDPREFS = "sharedprefs";
-	private static final String CHKAUTOSTART = "chkautostart";
-	private static final String WAKEUP = "WAKEUP";
-	private static final String CHKCONAUTOROTATE = "chkConAutoRotate";
-	private static final String SPNCONAUTOONOFF = "spnConAutoOnOff";
-	private static final String CHKCONRINGVIB = "chkconringvib";
-	private static final String SPNCONRINGVIBONOFF = "spnconringvibonoff";
-	private static final String CHKCONAPP = "chkConApp";
-	private static final String CHKCONMEDIAVOL = "chkconmediavol";
-	private static final String SKBCONMEDIAVOL = "skbconmediavol";
-	private static final String CHKDISAUTOROTATE = "chkDisAutoRotate";
-	private static final String SPNDISAUTOONOFF = "spnDisAutoOnOff";
-	private static final String CHKDISRINGVIB = "chkdisringvib";
-	private static final String SPNDISRINGVIBONOFF = "spndisringvibonoff";
-	private static final String STARTAPP = "startapp";
-		
+public class HeadSetActivity extends Activity implements OnItemSelectedListener, OnClickListener,
+		OnCheckedChangeListener, OnSeekBarChangeListener {
+	private static final String TAG = HeadSetActivity.class.getSimpleName();
+
 	private SharedPreferences prefs = null;
 	private CheckBox chkAutoStart = null;
 	private CheckBox chkWakeUp = null;
+	private CheckBox chkPowerConnected = null;
 	private CheckBox chkConAutoRotate = null;
 	private Spinner spnConRotateOnOff = null;
 	private CheckBox chkConRingVib = null;
@@ -77,19 +69,19 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 	private Spinner spnDisRotateOnOff = null;
 	private CheckBox chkDisRingVib = null;
 	private Spinner spnDisRingVibOnOff = null;
-	private Button btnStartService = null;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Log.d(TAG, "HeadSetActivity onCreate");
-		
+
 		setContentView(R.layout.main);
-		
-		prefs = getSharedPreferences(SHAREDPREFS, MODE_PRIVATE);
-		
+
+		prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
+
 		chkAutoStart = (CheckBox) findViewById(R.id.chkAutoStart);
 		chkWakeUp = (CheckBox) findViewById(R.id.chkWakeUp);
+		chkPowerConnected = (CheckBox) findViewById(R.id.chkPowerConnected);
 		chkConAutoRotate = (CheckBox) findViewById(R.id.chkConAutoRotate);
 		spnConRotateOnOff = (Spinner) findViewById(R.id.spnConAutoOnOff);
 		chkConRingVib = (CheckBox) findViewById(R.id.chkConRingVib);
@@ -102,10 +94,10 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 		spnDisRotateOnOff = (Spinner) findViewById(R.id.spnDisAutoOnOff);
 		chkDisRingVib = (CheckBox) findViewById(R.id.chkDisRingVib);
 		spnDisRingVibOnOff = (Spinner) findViewById(R.id.spnDisRingVibOnOff);
-		btnStartService = (Button) findViewById(R.id.btnStartService);
-		
+
 		chkAutoStart.setOnCheckedChangeListener(this);
 		chkWakeUp.setOnCheckedChangeListener(this);
+		chkPowerConnected.setOnCheckedChangeListener(this);
 		chkConAutoRotate.setOnCheckedChangeListener(this);
 		spnConRotateOnOff.setOnItemSelectedListener(this);
 		chkConRingVib.setOnCheckedChangeListener(this);
@@ -118,125 +110,93 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 		spnDisRotateOnOff.setOnItemSelectedListener(this);
 		chkDisRingVib.setOnCheckedChangeListener(this);
 		spnDisRingVibOnOff.setOnItemSelectedListener(this);
-		btnStartService.setOnClickListener(this);
-		
-		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-        		this, android.R.layout.simple_spinner_item, 
-        		getResources().getStringArray(R.array.onOff));
-		
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		findViewById(R.id.btnStartService).setOnClickListener(this);
+
+		ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.onOff));
+
+		arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spnConRotateOnOff.setAdapter(arrayAdapter);
 		spnConRingVibOnOff.setAdapter(arrayAdapter);
 		spnDisRotateOnOff.setAdapter(arrayAdapter);
 		spnDisRingVibOnOff.setAdapter(arrayAdapter);
-		
-		skbConMediaVol.setProgress(prefs.getInt(SKBCONMEDIAVOL, 0));
+
+		skbConMediaVol.setProgress(prefs.getInt(Cons.SKBCONMEDIAVOL, 0));
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		if (prefs.getBoolean(CHKAUTOSTART, false))
-			chkAutoStart.setChecked(true);
-		else chkAutoStart.setChecked(false);
-		
-		if (prefs.getBoolean(WAKEUP, false))
-			chkWakeUp.setChecked(true);
-		else chkWakeUp.setChecked(false);
-		
-		if (prefs.getBoolean(CHKCONAUTOROTATE, false))
-			chkConAutoRotate.setChecked(true);
-		else chkConAutoRotate.setChecked(false);
-		
-		if (prefs.getBoolean(SPNCONAUTOONOFF, true)) 
+
+		chkAutoStart.setChecked(prefs.getBoolean(Cons.CHKAUTOSTART, false));
+		chkWakeUp.setChecked(prefs.getBoolean(Cons.WAKEUP, false));
+		chkPowerConnected.setChecked(prefs.getBoolean(Cons.CHKPOWERCONNECTED, false));
+		chkConAutoRotate.setChecked(prefs.getBoolean(Cons.CHKCONAUTOROTATE, false));
+
+		if (prefs.getBoolean(Cons.SPNCONAUTOONOFF, true)) {
 			spnConRotateOnOff.setSelection(0);
-		else spnConRotateOnOff.setSelection(1);
-		
-		if (prefs.getBoolean(CHKCONRINGVIB, false))
-			chkConRingVib.setChecked(true);
-		else chkConRingVib.setChecked(false);
-		
-		if (prefs.getBoolean(SPNCONRINGVIBONOFF, true)) 
+		} else spnConRotateOnOff.setSelection(1);
+
+		chkConRingVib.setChecked(prefs.getBoolean(Cons.CHKCONRINGVIB, false));
+
+		if (prefs.getBoolean(Cons.SPNCONRINGVIBONOFF, true)) {
 			spnConRingVibOnOff.setSelection(0);
-		else spnConRingVibOnOff.setSelection(1);
-		
-		if (prefs.getBoolean(CHKCONAPP, false))
-			chkConApp.setChecked(true);
-		else chkConApp.setChecked(false);
-		
-		if (prefs.getString(STARTAPP, STARTAPP).equals(STARTAPP))
-			btnConApp.setText("Set app...");
-		else btnConApp.setText(prefs.getString(STARTAPP, STARTAPP));
-		
-		if (prefs.getBoolean(CHKCONMEDIAVOL, false)) {
-			chkConMediaVol.setChecked(true);
-			skbConMediaVol.setEnabled(true);
-		} else {
-			chkConMediaVol.setChecked(false);
-			skbConMediaVol.setEnabled(false);
-		}
-		
-		if (prefs.getBoolean(CHKDISAUTOROTATE, false))
-			chkDisAutoRotate.setChecked(true);
-		else chkDisAutoRotate.setChecked(false);
-		
-		if (prefs.getBoolean(SPNDISAUTOONOFF, true))
+		} else spnConRingVibOnOff.setSelection(1);
+
+		chkConApp.setChecked(prefs.getBoolean(Cons.CHKCONAPP, false));
+
+		btnConApp.setText("Set apps...");
+
+		boolean mediaVol = prefs.getBoolean(Cons.CHKCONMEDIAVOL, false);
+		chkConMediaVol.setChecked(mediaVol);
+		skbConMediaVol.setEnabled(mediaVol);
+
+		chkDisAutoRotate.setChecked(prefs.getBoolean(Cons.CHKDISAUTOROTATE, false));
+
+		if (prefs.getBoolean(Cons.SPNDISAUTOONOFF, true)) {
 			spnDisRotateOnOff.setSelection(0);
-		else spnDisRotateOnOff.setSelection(1);
-		
-		if (prefs.getBoolean(CHKDISRINGVIB, false))
-			chkDisRingVib.setChecked(true);
-		else chkDisRingVib.setChecked(false);
-		
-		if (prefs.getBoolean(SPNDISRINGVIBONOFF, true)) 
+		} else spnDisRotateOnOff.setSelection(1);
+
+		chkDisRingVib.setChecked(prefs.getBoolean(Cons.CHKDISRINGVIB, false));
+
+		if (prefs.getBoolean(Cons.SPNDISRINGVIBONOFF, true)) {
 			spnDisRingVibOnOff.setSelection(0);
-		else spnDisRingVibOnOff.setSelection(1);
+		} else spnDisRingVibOnOff.setSelection(1);
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onItemSelected(AdapterView<?> view, View v, int position, long arg3) {
 		Log.d(TAG, "onItemSelected: " + position);
 		SharedPreferences.Editor editor = prefs.edit();
-		
-		switch (view.getId()){
+
+		boolean state = position == 0 ? true : false;
+
+		switch (view.getId()) {
 		case R.id.spnConAutoOnOff:
 			Log.d(TAG, "spnConAutoOnOff, position: " + position);
-			
-			if (position == 0) 
-				editor.putBoolean(SPNCONAUTOONOFF, true);
-			else editor.putBoolean(SPNCONAUTOONOFF, false);
-			
+			editor.putBoolean(Cons.SPNCONAUTOONOFF, state);
 			break;
-		
+
 		case R.id.spnConRingVibOnOff:
 			Log.d(TAG, "spnConRingVibOnOff, position: " + position);
-			
-			if (position == 0) 
-				editor.putBoolean(SPNCONRINGVIBONOFF, true);
-			else editor.putBoolean(SPNCONRINGVIBONOFF, false);
-			
+			editor.putBoolean(Cons.SPNCONRINGVIBONOFF, state);
 			break;
-			
-		case R.id.spnDisAutoOnOff: 
+
+		case R.id.spnDisAutoOnOff:
 			Log.d(TAG, "spnDisAutoOnOff, position: " + position);
-			
-			if (position == 0) 
-				editor.putBoolean(SPNDISAUTOONOFF, true);
-			else editor.putBoolean(SPNDISAUTOONOFF, false);
-			
+			editor.putBoolean(Cons.SPNDISAUTOONOFF, state);
 			break;
-			
+
 		case R.id.spnDisRingVibOnOff:
 			Log.d(TAG, "spnDisRingVibOnOff, position: " + position);
-			
-			if (position == 0) 
-				editor.putBoolean(SPNDISRINGVIBONOFF, true);
-			else editor.putBoolean(SPNDISRINGVIBONOFF, false);
-			
+			editor.putBoolean(Cons.SPNDISRINGVIBONOFF, state);
 			break;
 		}
-	    editor.commit();
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			editor.commit();
+		} else editor.apply();
 	}
 
 	@Override
@@ -246,130 +206,102 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btnConApp:
-			
 			startActivity(new Intent(this, InstalledAppActivity.class));
 			break;
 
 		case R.id.btnStartService:
-
 			startService(new Intent(this, ServiceListener.class));
 			finish();
-
 			break;
 		}
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onCheckedChanged(CompoundButton view, boolean state) {
 		SharedPreferences.Editor editor = prefs.edit();
-		
-		switch(view.getId()){
+
+		switch (view.getId()) {
 		case R.id.chkAutoStart:
-			
-			if (state) editor.putBoolean(CHKAUTOSTART, true);
-			else editor.putBoolean(CHKAUTOSTART, false);
-			
+			editor.putBoolean(Cons.CHKAUTOSTART, state);
 			break;
-		
+
 		case R.id.chkWakeUp:
-			
-			if (state) editor.putBoolean(WAKEUP, true);
-			else editor.putBoolean(WAKEUP, false);
-			
+			editor.putBoolean(Cons.WAKEUP, state);
 			break;
-			
+
+		case R.id.chkPowerConnected:
+			editor.putBoolean(Cons.CHKPOWERCONNECTED, state);
+			break;
+
 		case R.id.chkConAutoRotate:
-			
-			if (state) editor.putBoolean(CHKCONAUTOROTATE, true);
-			else editor.putBoolean(CHKCONAUTOROTATE, false);
-			
+			editor.putBoolean(Cons.CHKCONAUTOROTATE, state);
 			break;
-		
+
 		case R.id.chkConRingVib:
-			
-			if (state) editor.putBoolean(CHKCONRINGVIB, true);
-			else editor.putBoolean(CHKCONRINGVIB, false);
-			
+			editor.putBoolean(Cons.CHKCONRINGVIB, state);
 			break;
-			
+
 		case R.id.chkConApp:
-			
-			if (state) editor.putBoolean(CHKCONAPP, true);
-			else editor.putBoolean(CHKCONAPP, false);
-			
+			editor.putBoolean(Cons.CHKCONAPP, state);
 			break;
-		
+
 		case R.id.chkConMediaVolume:
-			
-			if (state) {
-				editor.putBoolean(CHKCONMEDIAVOL, true);
-				skbConMediaVol.setEnabled(true);
-			} else {
-				editor.putBoolean(CHKCONMEDIAVOL, false);
-				skbConMediaVol.setEnabled(false);
-			}
-			
+			editor.putBoolean(Cons.CHKCONMEDIAVOL, state);
+			skbConMediaVol.setEnabled(state);
 			break;
-		
+
 		case R.id.chkDisAutoRotate:
-			
-			if (state) editor.putBoolean(CHKDISAUTOROTATE, true);
-			else editor.putBoolean(CHKDISAUTOROTATE, false);
-			
+			editor.putBoolean(Cons.CHKDISAUTOROTATE, state);
 			break;
-		
+
 		case R.id.chkDisRingVib:
-			
-			if (state) editor.putBoolean(CHKDISRINGVIB, true);
-			else editor.putBoolean(CHKDISRINGVIB, false);
-			
+			editor.putBoolean(Cons.CHKDISRINGVIB, state);
 			break;
 		}
-		editor.commit();
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			editor.commit();
+		} else editor.apply();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
-		switch(item.getItemId()){
-		
+
+		switch (item.getItemId()) {
 		case R.id.menuFeedback:
-			
-			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);  
-					  
-			String aEmailList[] = { "codeskraps@gmail.com" };  
-			  
-			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);    
-			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "HeadSet - Feedback");  
-			emailIntent.setType("plain/text");  
-			
+			String aEmailList[] = { "codeskraps@gmail.com" };
+
+			Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+			emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+			emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "HeadSet - Feedback");
+			emailIntent.setType("plain/text");
+
 			startActivity(Intent.createChooser(emailIntent, "Send your feedback in:"));
-			
 			break;
-		
+
 		case R.id.menuBuyMeAPint:
-			
 			startActivity(new Intent(this, DonationActivity.class));
-			
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onProgressChanged(SeekBar arg0, int progress, boolean arg2) {
 		SharedPreferences.Editor editor = prefs.edit();
-		
-		editor.putInt(SKBCONMEDIAVOL, progress);
-		
-		editor.commit();
+		editor.putInt(Cons.SKBCONMEDIAVOL, progress);
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
+			editor.commit();
+		} else editor.apply();
 	}
 
 	@Override

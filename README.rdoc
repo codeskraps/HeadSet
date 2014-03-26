@@ -4,7 +4,7 @@
 * <b>Git:</b> https://github.com/heepie/HeadSet
 * <b>Author:</b> Carles Sentis  
 * <b>License:</b> GNU GPL v3
-* <b>Latest Version:</b> 1.15
+* <b>Latest Version:</b> 2
 * <b>Release Date:</b> Tue Apr 10, 2012
 
 == General Infromation
@@ -15,13 +15,12 @@ This is an app for Android powered devices. HeadSet is an application for custom
 
 Carles Sentis codeskraps@gmail.com
 
-
-== Thanks
-
-
 == ChangeLog
 
-<tt>v1.15 -Stopped HeadSet from launching multiple times
+<tt>v2    -Theme for newer devices
+          -Multiple apps select
+          -Trigger only if usb connected option
+<tt>v1.15 -Stop HeadSet from launching multiple times
 <tt>v1.14 -Removing launchFeature and bug fix with packageManager
 <tt>v1.13 -Bug fix
 <tt>v1.12 -Launch home screen on disconnect
@@ -37,11 +36,9 @@ Carles Sentis codeskraps@gmail.com
 <tt>v1.2  -Added a bunch of features</tt>
 <tt>v1.1  -First plain release... Gone and forgotten</tt>
 
-== News
-
-
 == Install
 
+https://play.google.com/store/apps/details?id=com.codeskraps.headset
 
 == Copyright/License
 
@@ -63,7 +60,3 @@ General Public License for more details.</tt>
 <tt>You should have received a copy of the GNU
 General Public License along with this program.
 If not, see http://www.gnu.org/licenses.</tt>
-
-
-== Bugs
-

@@ -20,7 +20,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.receivers;
+
+import com.codeskraps.headset.services.ServiceListener;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

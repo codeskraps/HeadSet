@@ -20,7 +20,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.services;
+
+import com.codeskraps.headset.receivers.HeadSetReceiver;
 
 import android.app.Service;
 import android.content.Intent;
@@ -29,8 +31,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class ServiceListener extends Service {
+	private static final String TAG = ServiceListener.class.getSimpleName();
 
-	private static final String TAG = "HeadSet";
 	private HeadSetReceiver apr = null;
 
 	@Override
@@ -49,11 +51,11 @@ public class ServiceListener extends Service {
 		inf.addAction("android.intent.action.HEADSET_PLUG");
 		registerReceiver(apr, inf);
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		
+
 		Log.d(TAG, "ServiceListener onDestroy");
 		unregisterReceiver(apr);
 	}

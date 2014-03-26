@@ -20,7 +20,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.codeskraps.headset;
+package com.codeskraps.headset.activities;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -30,15 +30,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class WakeUpActivity extends Activity {
+import com.codeskraps.headset.misc.Cons;
 
-	private static final String TAG = "HeadSet";
-	private static final String SHAREDPREFS = "sharedprefs";
-	private static final String STARTAPPPACKAGE = "startapppackage";
-	private static final String STARTAPPACTIVITY = "startactivity";
+public class WakeUpActivity extends Activity {
+	private static final String TAG = WakeUpActivity.class.getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,24 +45,20 @@ public class WakeUpActivity extends Activity {
 
 		Log.d(TAG, "WakeUp onCreate");
 
-		SharedPreferences prefs = getSharedPreferences(SHAREDPREFS, Context.MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences(Cons.SHAREDPREFS, Context.MODE_PRIVATE);
 
-		String pac = prefs.getString(STARTAPPPACKAGE, STARTAPPPACKAGE);
-		String act = prefs.getString(STARTAPPACTIVITY, STARTAPPACTIVITY);
+		String pac = prefs.getString(Cons.STARTAPPPACKAGE, Cons.STARTAPPPACKAGE);
+		String act = prefs.getString(Cons.STARTAPPACTIVITY, Cons.STARTAPPACTIVITY);
 
 		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, act);
+		PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
+		wl.acquire();
 
-		// final Window win = getWindow();
-		// win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-		// | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-		// win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-		// | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-
-		getWindow().addFlags(
-				WindowManager.LayoutParams.FLAG_FULLSCREEN
-						| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-						| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+		final Window win = getWindow();
+		win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+				| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
 		try {
 			wl.acquire();
