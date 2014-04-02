@@ -28,7 +28,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,6 +46,7 @@ import android.widget.Spinner;
 
 import com.codeskraps.headset.R;
 import com.codeskraps.headset.misc.Cons;
+import com.codeskraps.headset.misc.L;
 import com.codeskraps.headset.services.ServiceListener;
 
 public class HeadSetActivity extends Activity implements OnItemSelectedListener, OnClickListener,
@@ -73,7 +73,7 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "HeadSetActivity onCreate");
+		L.d(TAG, "HeadSetActivity onCreate");
 
 		setContentView(R.layout.main);
 
@@ -167,29 +167,29 @@ public class HeadSetActivity extends Activity implements OnItemSelectedListener,
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onItemSelected(AdapterView<?> view, View v, int position, long arg3) {
-		Log.d(TAG, "onItemSelected: " + position);
+		L.d(TAG, "onItemSelected: " + position);
 		SharedPreferences.Editor editor = prefs.edit();
 
 		boolean state = position == 0 ? true : false;
 
 		switch (view.getId()) {
 		case R.id.spnConAutoOnOff:
-			Log.d(TAG, "spnConAutoOnOff, position: " + position);
+			L.d(TAG, "spnConAutoOnOff, position: " + position);
 			editor.putBoolean(Cons.SPNCONAUTOONOFF, state);
 			break;
 
 		case R.id.spnConRingVibOnOff:
-			Log.d(TAG, "spnConRingVibOnOff, position: " + position);
+			L.d(TAG, "spnConRingVibOnOff, position: " + position);
 			editor.putBoolean(Cons.SPNCONRINGVIBONOFF, state);
 			break;
 
 		case R.id.spnDisAutoOnOff:
-			Log.d(TAG, "spnDisAutoOnOff, position: " + position);
+			L.d(TAG, "spnDisAutoOnOff, position: " + position);
 			editor.putBoolean(Cons.SPNDISAUTOONOFF, state);
 			break;
 
 		case R.id.spnDisRingVibOnOff:
-			Log.d(TAG, "spnDisRingVibOnOff, position: " + position);
+			L.d(TAG, "spnDisRingVibOnOff, position: " + position);
 			editor.putBoolean(Cons.SPNDISRINGVIBONOFF, state);
 			break;
 		}

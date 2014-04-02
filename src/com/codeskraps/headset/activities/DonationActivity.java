@@ -22,34 +22,32 @@
 
 package com.codeskraps.headset.activities;
 
-import com.codeskraps.headset.R;
-import com.codeskraps.headset.R.id;
-import com.codeskraps.headset.R.layout;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.codeskraps.headset.R;
+import com.codeskraps.headset.misc.L;
+
 public class DonationActivity extends Activity implements OnClickListener {
 	private static final String TAG = DonationActivity.class.getSimpleName();
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d(TAG, "onCreate");
-		
+		L.d(TAG, "onCreate");
+
 		setContentView(R.layout.donation);
-		
+
 		TextView txtGlass = (TextView) findViewById(R.id.txtGlass);
 		TextView txtPint = (TextView) findViewById(R.id.txtPint);
 		TextView txtMug = (TextView) findViewById(R.id.txtMug);
 		TextView txtBarrel = (TextView) findViewById(R.id.txtBarrel);
-		
+
 		txtGlass.setOnClickListener(this);
 		txtPint.setOnClickListener(this);
 		txtMug.setOnClickListener(this);
@@ -58,28 +56,36 @@ public class DonationActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		
+
 		Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-		marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
-				Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		marketIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+				| Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 		String packageName = null;
-		
-		switch(v.getId()){
-		case R.id.txtGlass: packageName = new String("com.codeskraps.glassdonation"); break;
-		case R.id.txtPint: packageName = new String("com.codeskraps.pintdonation"); break;
-		case R.id.txtMug: packageName = new String("com.codeskraps.mugdonation"); break;
-		case R.id.txtBarrel: packageName = new String("com.codeskraps.barreldonation"); break;
+
+		switch (v.getId()) {
+		case R.id.txtGlass:
+			packageName = new String("com.codeskraps.glassdonation");
+			break;
+		case R.id.txtPint:
+			packageName = new String("com.codeskraps.pintdonation");
+			break;
+		case R.id.txtMug:
+			packageName = new String("com.codeskraps.mugdonation");
+			break;
+		case R.id.txtBarrel:
+			packageName = new String("com.codeskraps.barreldonation");
+			break;
 		}
-		
+
 		try {
 			startActivity(marketIntent.setData(Uri.parse("market://details?id=" + packageName)));
 		} catch (Exception e) {
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, 
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW,
 					Uri.parse("http://play.google.com/store/apps/details?id=" + packageName));
-			browserIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | 
-					Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+			browserIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+					| Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 			startActivity(browserIntent);
-			Log.e(TAG, e.getMessage());
+			L.e(TAG, e.getMessage());
 		}
 	}
 }

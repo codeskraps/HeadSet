@@ -35,7 +35,6 @@ import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,6 +51,7 @@ import android.widget.Toast;
 import com.codeskraps.headset.R;
 import com.codeskraps.headset.misc.AppWrapper;
 import com.codeskraps.headset.misc.Cons;
+import com.codeskraps.headset.misc.L;
 import com.codeskraps.headset.misc.ResolveInfoWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -117,7 +117,7 @@ public class InstalledAppActivity extends ListActivity implements OnClickListene
 				}
 				if (!found) {
 					apps.add(new AppWrapper(app, packageName, activity));
-					Log.v(TAG, "Added: " + info.getPackageName());
+					L.v(TAG, "Added: " + info.getPackageName());
 				}
 
 			} else {
@@ -125,13 +125,13 @@ public class InstalledAppActivity extends ListActivity implements OnClickListene
 				for (AppWrapper wrapper : apps) {
 					if (info.getPackageName().equals(wrapper.getPackageName())) {
 						boolean result = apps.remove(wrapper);
-						Log.v(TAG, "removed:" + info.getPackageName() + ", result:" + result);
+						L.v(TAG, "removed:" + info.getPackageName() + ", result:" + result);
 						break;
 					}
 				}
 			}
 
-			Log.v(TAG, "lstCount:" + apps.size());
+			L.v(TAG, "lstCount:" + apps.size());
 		}
 	}
 
@@ -162,12 +162,12 @@ public class InstalledAppActivity extends ListActivity implements OnClickListene
 						list.size());
 				SharedPreferences prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
 				String json = prefs.getString(Cons.STARTUPAPPS, new String());
-				Log.v(TAG, "Json:" + json);
+				L.v(TAG, "Json:" + json);
 
 				if (json.length() > 1) {
 					apps = new Gson().fromJson(json,
 							new TypeToken<ArrayList<AppWrapper>>() {}.getType());
-					Log.v(TAG, "app:" + apps.size());
+					L.v(TAG, "app:" + apps.size());
 				}
 
 				for (ResolveInfo item : list) {
@@ -184,7 +184,7 @@ public class InstalledAppActivity extends ListActivity implements OnClickListene
 				}
 				return new ActivityAdapter(InstalledAppActivity.this, activities);
 			} catch (Exception e) {
-				Log.i(TAG, "Handled: " + e.getMessage(), e);
+				L.i(TAG, "Handled: " + e.getMessage(), e);
 			}
 			return null;
 		}
@@ -224,7 +224,7 @@ public class InstalledAppActivity extends ListActivity implements OnClickListene
 
 		if (apps.size() > 0) {
 			json = new Gson().toJson(apps);
-			Log.v(TAG, "json app:" + json);
+			L.v(TAG, "json app:" + json);
 			editor.putString(Cons.STARTUPAPPS, json);
 		} else editor.putString(Cons.STARTUPAPPS, new String());
 

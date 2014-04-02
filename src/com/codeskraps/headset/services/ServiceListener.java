@@ -22,13 +22,13 @@
 
 package com.codeskraps.headset.services;
 
-import com.codeskraps.headset.receivers.HeadSetReceiver;
-
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-import android.util.Log;
+
+import com.codeskraps.headset.misc.L;
+import com.codeskraps.headset.receivers.HeadSetReceiver;
 
 public class ServiceListener extends Service {
 	private static final String TAG = ServiceListener.class.getSimpleName();
@@ -44,7 +44,7 @@ public class ServiceListener extends Service {
 	public void onCreate() {
 		super.onCreate();
 
-		Log.d(TAG, "ServiceListener onCreate");
+		L.d(TAG, "ServiceListener onCreate");
 		/* register receiver */
 		apr = new HeadSetReceiver(); /* replace this by your receiver class */
 		IntentFilter inf = new IntentFilter();
@@ -56,7 +56,7 @@ public class ServiceListener extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 
-		Log.d(TAG, "ServiceListener onDestroy");
+		L.d(TAG, "ServiceListener onDestroy");
 		unregisterReceiver(apr);
 	}
 }

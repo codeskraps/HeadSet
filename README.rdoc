@@ -17,6 +17,7 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
+<tt>v2.1  -Bug fixes
 <tt>v2    -Theme for newer devices
           -Multiple apps select
           -Trigger only if usb connected option</tt>
@@ -38,7 +39,7 @@ Carles Sentis codeskraps@gmail.com
 
 == Install
 
-https://play.google.com/store/apps/details?id=com.codeskraps.headset
+<tt>https://play.google.com/store/apps/details?id=com.codeskraps.headset</tt>
 
 == Copyright/License
 

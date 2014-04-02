@@ -11,13 +11,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.PowerManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.codeskraps.headset.R;
 import com.codeskraps.headset.misc.AppWrapper;
 import com.codeskraps.headset.misc.Cons;
-import com.codeskraps.headset.misc.HeadSetApplication;
+import com.codeskraps.headset.misc.L;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -35,21 +35,22 @@ public class GhostActivity extends Activity {
 	private static final String TAG = GhostActivity.class.getSimpleName();
 
 	private LaunchAdapter adapter = null;
+	private PowerManager.WakeLock wl = null;
+	private SharedPreferences prefs = null;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
+		prefs = getSharedPreferences(Cons.SHAREDPREFS, MODE_PRIVATE);
 
 		if (prefs.getBoolean(Cons.WAKEUP, false)) {
-			((HeadSetApplication) getApplication()).WakeLock_aquire();
-
-			final Window win = getWindow();
-			win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-					| WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-					| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-					| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+				PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+				wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, TAG);
+				wl.acquire();
+			}
 		}
 
 		String json = prefs.getString(Cons.STARTUPAPPS, new String());
@@ -57,10 +58,24 @@ public class GhostActivity extends Activity {
 
 		if (json.length() > 1) {
 			apps = new Gson().fromJson(json, new TypeToken<ArrayList<AppWrapper>>() {}.getType());
-			Log.v(TAG, "app:" + apps.size());
+			L.v(TAG, "app:" + apps.size());
 		}
 
 		adapter = new LaunchAdapter(this, apps);
+	}
+
+	@Override
+	public void onAttachedToWindow() {
+		super.onAttachedToWindow();
+		if (prefs.getBoolean(Cons.WAKEUP, false)) {
+			getWindow().setFlags(
+					WindowManager.LayoutParams.FLAG_FULLSCREEN
+							| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+							| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+					WindowManager.LayoutParams.FLAG_FULLSCREEN
+							| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+							| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+		}
 	}
 
 	@Override
@@ -91,8 +106,15 @@ public class GhostActivity extends Activity {
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (wl != null && wl.isHeld()) wl.release();
+		finish();
+	}
+
 	private void launchApp(AppWrapper wrapper) {
-		Log.v(TAG, "Launching:" + wrapper.getPackageName());
+		L.v(TAG, "Launching:" + wrapper.getPackageName());
 		Intent i = new Intent(Intent.ACTION_MAIN, null);
 		i.addCategory(Intent.CATEGORY_LAUNCHER);
 		i.setComponent(new ComponentName(wrapper.getPackageName(), wrapper.getActivity()));
@@ -100,7 +122,6 @@ public class GhostActivity extends Activity {
 		try {
 			startActivity(i);
 		} catch (Exception e) {}
-		finish();
 	}
 
 	private class LaunchAdapter extends BaseAdapter implements OnClickListener {
@@ -154,7 +175,7 @@ public class GhostActivity extends Activity {
 				Drawable icon = getPackageManager().getApplicationIcon(pkg);
 				vHolder.imageView.setImageDrawable(icon);
 			} catch (PackageManager.NameNotFoundException e) {
-				Log.i(TAG, "Handled: " + e.getMessage(), e);
+				L.i(TAG, "Handled: " + e.getMessage(), e);
 				vHolder.imageView.setImageBitmap(null);
 				vHolder.textView.setText("App Removed");
 				updateJson(e.getMessage());
@@ -166,14 +187,14 @@ public class GhostActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			AppWrapper clicked = apps.get(v.getId());
-			Log.d(TAG, "onClick" + clicked.getPackageName());
+			L.d(TAG, "onClick" + clicked.getPackageName());
 
 			launchApp(clicked);
 		}
 	}
 
 	private void updateJson(String packageName) {
-
+		// TODO
 	}
 
 	private class ViewHolder {

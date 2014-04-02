@@ -32,15 +32,15 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.BatteryManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.codeskraps.headset.activities.GhostActivity;
 import com.codeskraps.headset.misc.Cons;
-import com.codeskraps.headset.misc.HeadSetApplication;
+import com.codeskraps.headset.misc.L;
 
 public class HeadSetReceiver extends BroadcastReceiver {
 	private static final String TAG = HeadSetReceiver.class.getSimpleName();
 
+	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -54,8 +54,9 @@ public class HeadSetReceiver extends BroadcastReceiver {
 
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
+		KeyguardManager.KeyguardLock kl = null;
 		KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-		final KeyguardManager.KeyguardLock kl = km.newKeyguardLock(TAG);
+		kl = km.newKeyguardLock(TAG);
 
 		IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		Intent batteryStatus = context.registerReceiver(null, ifilter);
@@ -67,7 +68,7 @@ public class HeadSetReceiver extends BroadcastReceiver {
 		if (isPowerTrigger && isCharging == false) return;
 
 		if (intent.getExtras().getInt("state") == 0 && isConnected == true) {
-			Log.d(TAG, "HeadSet disconnected");
+			L.d(TAG, "HeadSet disconnected");
 
 			editor.putBoolean(Cons.ISCONNECTED, false);
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
@@ -82,9 +83,8 @@ public class HeadSetReceiver extends BroadcastReceiver {
 						android.provider.Settings.System.ACCELEROMETER_ROTATION, 0);
 
 			if (prefs.getBoolean(Cons.WAKEUP, false)) {
-				Log.d(TAG, "reenableKeyguard, release");
+				L.d(TAG, "reenableKeyguard, release");
 				kl.reenableKeyguard();
-				HeadSetApplication.getInstance().WakeLock_release();
 			}
 
 			if (prefs.getBoolean(Cons.CHKDISRINGVIB, false)) {
@@ -107,7 +107,7 @@ public class HeadSetReceiver extends BroadcastReceiver {
 			}
 
 		} else if (intent.getExtras().getInt("state") == 1 && isConnected == false) {
-			Log.d(TAG, "HeadSet connected");
+			L.d(TAG, "HeadSet connected");
 
 			editor.putBoolean(Cons.ISCONNECTED, true);
 			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD) {
@@ -148,7 +148,7 @@ public class HeadSetReceiver extends BroadcastReceiver {
 						(maxVol * prefs.getInt(Cons.SKBCONMEDIAVOL, 0)) / 100,
 						AudioManager.FLAG_VIBRATE);
 
-				Log.d(TAG, "Setting vol: " + prefs.getInt(Cons.SKBCONMEDIAVOL, 7));
+				L.d(TAG, "Setting vol: " + prefs.getInt(Cons.SKBCONMEDIAVOL, 7));
 			}
 
 			if (prefs.getBoolean(Cons.CHKCONAPP, false)) {
