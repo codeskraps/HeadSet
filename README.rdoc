@@ -17,7 +17,7 @@ Carles Sentis codeskraps@gmail.com
 
 == ChangeLog
 
-<tt>v2.1  -Bug fixes
+<tt>v2.1  -Bug fixes</tt>
 <tt>v2    -Theme for newer devices
           -Multiple apps select
           -Trigger only if usb connected option</tt>
